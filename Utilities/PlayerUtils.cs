@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using CalamityMod.Enums;
 using static Terraria.Player;
 
 namespace CalamityMod
@@ -888,6 +889,22 @@ namespace CalamityMod
         /// <param name="player">The player using the holdout.</param>
         /// <returns>Returns <see langword="true"/> if the player CAN'T use the item.</returns>
         public static bool CantUseHoldout(this Player player, bool needsToHold = true) => player == null || !player.active || player.dead || (!player.channel && needsToHold) || player.CCed || player.noItems;
+
+        /// <summary>
+        /// A short method that heals the player.
+        /// All direct heals in Calamity should use this.
+        /// </summary>
+        /// <param name="player">The player being healed.</param>
+        /// <param name="amount">The amount of life being healed.</param>
+        /// <param name="healTextType">Whether the heal CombatText should be displayed, and whether it should be synced. Displays and syncs by default.</param>
+        public static void HealPlayer(this Player player, int amount, HealTextType healTextType = HealTextType.Broadcast)
+        {
+            player.statLife += amount;
+            if (player.statLife > player.statLifeMax2)
+                player.statLife = player.statLifeMax2;
+            if (healTextType != HealTextType.None)
+                player.HealEffect(amount, healTextType == HealTextType.Broadcast);
+        }
 
         /// <summary>
         /// Makes the given player send the given packet to all appropriate receivers.<br />
